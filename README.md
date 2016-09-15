@@ -23,11 +23,19 @@ class CacheDetailView(DetailView):
   def get_queryset(self):
     return super(CacheDetailView,self).get_queryset().select_related()
   def get_object(self,queryset=None):
-    obj = cache.get('%s-%s' % self.model.__name__.lower(),self.kwargs['pk']0,None)
+    obj = cache.get('%s-%s' % self.model.__name__.lower(),self.kwargs['pk']),None)
     if not obj:
       obj = super(CachedDetailView,self).get_object(queryset)
       cache.set('%s-%s'%(self.model.__name__.lower(),self.kwargs['pk']),obj)
     return obj
+```
+
+update cache(delete old cache)  
+override save() in model.py.
+```
+def save(self,*args,**kwargs):
+  super(M,self).save(*args,**kwargs)
+  cache.delete('m-%s'%self.pk)
 ```
 ####7. Management and Maintenance of Your Application
 #####Creating manage.py commands
